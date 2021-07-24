@@ -6,7 +6,10 @@ module.exports = {
     ],
     output: {
       path: __dirname,
-      filename: './assets/javascripts/bundle.js'
+      filename: './assets/javascripts/bundle.js',
+      library: {
+        type: 'window'
+      },
     },
     resolve: {
       extensions: ['.ts', '.js', '.tsx']
