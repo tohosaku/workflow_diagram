@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["es6", "dom"],
+    "types": ["node"],
+    "sourceMap": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "jsx": "react",
+    "outDir": "lib",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": ["./app/assets"],
+  "exclude": ["**/*.spec.ts", "**/*.spec.tsx"]
+}
