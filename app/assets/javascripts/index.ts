@@ -3,7 +3,7 @@ import { runApp } from "./standalone";
 
 const layoutOptions = {
   "elk.algorithm": "layered",
-  "elk.direction": "RIGHT",
+  "elk.direction": "DOWN",
   "spacing.nodeNode": 60,
   "spacing.nodeNodeBetweenLayers": 60,
   "spacing.edgeNodeBetweenLayers": 30,

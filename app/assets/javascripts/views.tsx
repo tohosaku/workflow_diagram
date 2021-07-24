@@ -9,7 +9,7 @@ import { VNode } from "snabbdom/vnode";
 export class TaskView extends RectangularNodeView {
     render(node: Readonly<TaskNode>, context: RenderingContext): VNode {
         return <g>
-            <rect class-sprotty-node={true} class-task={true}
+            <rect class-sprotty-node={true} class-workflow-status={true}
                 class-mouseover={node.hoverFeedback} class-selected={node.selected}
                 x="0" y="0"  rx={5} ry={5} width={Math.max(node.size.width, 0)} height={Math.max(node.size.height, 0)}></rect>
             {context.renderChildren(node)}
