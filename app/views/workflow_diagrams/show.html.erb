@@ -1,2 +1,30 @@
+<% content_for :header_tags do %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" media="all" href="/plugin_assets/workflow_diagram/stylesheets/diagram.css">
+<% end %>
+
 <h2>Workflow Diagram</h2>
-<%= link_to "graph", workflow_diagram_path(:format => 'json'), remote: true, method: :get %>
+
+<label><%=l(:label_role)%>:
+<%= select_tag 'role_id', options_from_collection_for_select(Role.sorted.select(&:consider_workflow?), "id", "name"), class: :workflow_transition  %>
+</label>
+<label><%=l(:label_tracker)%>:
+<%= select_tag 'tracker_id', options_from_collection_for_select(Tracker.sorted, "id", "name"), class: :workflow_transition %>
+</label>
+
+<div id="sprotty"></div>
+<script src='/plugin_assets/workflow_diagram/javascripts/bundle.js'></script>
+<%= javascript_tag do %>
+$('.workflow_transition').on('change', function(event) {
+  $.ajax({
+    url: "<%= escape_javascript workflow_diagram_path(:format => 'json') %>",
+    type: 'get',
+    data: {
+      'role_id': $('#role_id').val(),
+      'tracker_id': $('#tracker_id').val()
+    }
+  }).done(function(data){
+      setGraph(data);
+  });
+})
+<% end %>
