@@ -15,11 +15,29 @@ class WorkflowDiagramsController < ApplicationController
   private
 
   def graph(tracker_id, role_id)
+    nodes = graph_children.map do |c|
+      {
+        type: 'node',
+        id: "n#{c.id}",
+        children: [
+          type: 'label',
+          id: "label#{c.id}",
+          text: c.name
+        ]
+      }
+    end
+    edges = graph_edges(tracker_id, role_id).map do |e|
+      {
+        type: 'edge',
+        id: "e#{e.id}",
+        sourceId: "n#{e.old_status_id}",
+        targetId: "n#{e.new_status_id}"
+      }
+    end
     {
-      children: graph_children.map { |c| { id: "n#{c.id}", labels: [{ text: c.name }] } },
-      edges: graph_edges(tracker_id, role_id).map do |e|
-        { id: "e#{e.id}", sources: ["n#{e.old_status_id}"], targets: ["n#{e.new_status_id}"] }
-      end
+      type: 'graph',
+      id: 'root',
+      children: nodes + edges
     }
   end
 

@@ -1,20 +1,25 @@
 import {
   LocalModelSource,
   TYPES,
+  SGraphSchema
 } from "sprotty";
 import { createContainer } from "./di.config";
-import { ElkGraphJsonToSprotty } from "./elkgraph-to-sprotty";
-import ELK from 'elkjs/lib/elk.bundled.js'
-import { setChildrenSizes, ENode } from "./calculate-size";
+import ELK, { LayoutOptions } from 'elkjs/lib/elk.bundled.js'
+import { setChildrenSizes } from "./calculate-size";
 
-export async function runApp(containerId: string, graph: { children: ENode[] }) {
+import { elkLayoutModule, ElkFactory, ElkLayoutEngine } from 'sprotty-elk';
 
-  const transformer = new ElkGraphJsonToSprotty();
-  const elk = new ELK()
+export async function runApp(containerId: string, graph: SGraphSchema, layoutOptions: LayoutOptions) {
+ 
   const sized = setChildrenSizes(containerId, graph, { padding: 8 })
-  const elkgraph = await elk.layout(sized)
   const container = createContainer(containerId);
+  container.load(elkLayoutModule);
+  container.bind(ElkFactory).toConstantValue(() => new ELK({
+    defaultLayoutOptions: layoutOptions
+  }));
+  const elkEngine = container.get(ElkLayoutEngine);
   const modelSource = container.get<LocalModelSource>(TYPES.ModelSource);
-
-  modelSource.setModel(transformer.transform(elkgraph));
+  const result = await elkEngine.layout(sized);
+ 
+  modelSource.setModel(result);
 }

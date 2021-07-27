@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "elkjs": "^0.7.1",
-    "sprotty": "^0.9.0"
+    "sprotty": "^0.9.0",
+    "sprotty-elk": "^0.9.0"
   }
 }
