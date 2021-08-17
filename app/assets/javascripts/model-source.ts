@@ -4,6 +4,7 @@ import {
     SModelRootSchema,
     SGraphSchema,
     SModelElementSchema,
+    Dimension,
 } from "sprotty";
 import { ElkLayoutEngine } from 'sprotty-elk';
 
@@ -22,16 +23,6 @@ export class WorkflowDiagramModelSource extends LocalModelSource {
 }
 
 const ns = "http://www.w3.org/2000/svg";
-
-type SNode = {
-  id: string;
-  type: string;
-  children?: SModelElementSchema[];
-  size?: {
-    width: number;
-    height: number;
-  };
-};
 
 function setChildrenSizes(
   containerId: string,
@@ -54,40 +45,25 @@ function setDimension(
   node: SModelElementSchema,
   options: { padding: number }
 ) {
-  if (isNode(node)) {
-    const text = document.createElementNS(ns, "text");
-    const children = node.children;
-    if (children === undefined) return;
-    const child = children[0];
-    if (hasText(child)) {
-      text.textContent = child.text;
-      svg.append(text);
+  if (!hasName(node)) return;
 
-      const tb = text.getBBox();
-      (node as SNode).size = {
-        height: tb.height + options.padding,
-        width: tb.width + options.padding,
-      };
-    }
-  }
+  const text = document.createElementNS(ns, "text");
+  text.textContent = node.name;
+  svg.append(text);
+  const tb = text.getBBox();
+  node.size = {
+    height: tb.height + options.padding,
+    width: tb.width + options.padding,
+  };
 }
+
 
 function isObject(obj: unknown): obj is Record<string, unknown> {
   return typeof obj !== 'object' && obj !== null;
 }
 
-function isNode(child: unknown): child is SNode {
-  if (!isObject(child)) return false;
-
-  const node = child as Record<string, unknown>;
-  if (Array.isArray(node["children"])) {
-    return true;
-  }
-  return false;
-}
-
-function hasText(obj: unknown): obj is { text: string } {
+function hasName(obj: unknown): obj is { name: string, size?: Dimension } {
   if (!isObject(obj)) return false;
 
-  return typeof obj["text"] === "string";
+  return typeof obj["name"] === "string";
 }

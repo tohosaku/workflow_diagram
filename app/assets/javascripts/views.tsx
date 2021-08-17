@@ -12,7 +12,7 @@ export class TaskView extends RectangularNodeView {
             <rect class-sprotty-node={true} class-workflow-status={true}
                 class-mouseover={node.hoverFeedback} class-selected={node.selected}
                 x="0" y="0"  rx={5} ry={5} width={Math.max(node.size.width, 0)} height={Math.max(node.size.height, 0)}></rect>
-            {context.renderChildren(node)}
+            <text>{node.name}</text>
         </g>;
     }
 }

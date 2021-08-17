@@ -19,11 +19,7 @@ class WorkflowDiagramsController < ApplicationController
       {
         type: 'node',
         id: "n#{c.id}",
-        children: [
-          type: 'label',
-          id: "label#{c.id}",
-          text: c.name
-        ]
+        name: c.name
       }
     end
     edges = graph_edges(tracker_id, role_id).map do |e|
