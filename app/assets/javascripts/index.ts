@@ -1,16 +1,14 @@
 import "reflect-metadata";
-import { runApp } from "./standalone";
+import {
+  SModelRootSchema,
+  TYPES
+} from "sprotty";
+import { createContainer } from "./di.config";
+import { WorkflowDiagramModelSource } from "./model-source";
 
-const layoutOptions = {
-  "elk.algorithm": "layered",
-  "elk.direction": "DOWN",
-  "spacing.nodeNode": "60",
-  "spacing.nodeNodeBetweenLayers": "60",
-  "spacing.edgeNodeBetweenLayers": "30",
-};
-
-export function setGraph(workflow: any) {
-  runApp("sprotty", workflow, layoutOptions);
+export function setGraph(containerId: string, workflow: SModelRootSchema) {
+  const container = createContainer(containerId);
+  const modelSource = container.get<WorkflowDiagramModelSource>(TYPES.ModelSource);
+ 
+  modelSource.setModel(workflow);
 }
-
-

@@ -29,11 +29,21 @@ export class TaskEdgeView extends PolylineEdgeView {
     }
 
     protected renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
-        const p1 = segments[segments.length - 2];
-        const p2 = segments[segments.length - 1];
-        return [
-            <path class-elkedge={true} class-arrow={true} d="M 0,0 L 8,-3 L 8,3 Z"
-                  transform={`rotate(${toDegrees(angleOfPoint({ x: p1.x - p2.x, y: p1.y - p2.y }))} ${p2.x} ${p2.y}) translate(${p2.x} ${p2.y})`}/>
-        ];
+        const s1 = segments[1];
+        const s2 = segments[0];
+        const t1 = segments[segments.length - 2];
+        const t2 = segments[segments.length - 1];
+
+        const sourceArrow = <path class-elkedge={true} class-arrow={true} d="M 0,0 L 8,-3 L 8,3 Z"
+            transform={`rotate(${toDegrees(angleOfPoint({ x: s1.x - s2.x, y: s1.y - s2.y }))} ${s2.x} ${s2.y}) translate(${s2.x} ${s2.y})`}/>
+        const targetArrow = <path class-elkedge={true} class-arrow={true} d="M 0,0 L 8,-3 L 8,3 Z"
+            transform={`rotate(${toDegrees(angleOfPoint({ x: t1.x - t2.x, y: t1.y - t2.y }))} ${t2.x} ${t2.y}) translate(${t2.x} ${t2.y})`}/>
+        
+        if (edge.type === 'edge:unidir') {
+            return [ targetArrow ];
+        }
+        else {
+            return [ sourceArrow, targetArrow ];
+        }
     }
 }
