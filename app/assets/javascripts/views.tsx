@@ -1,8 +1,8 @@
 /** @jsx svg */
 import { svg } from 'snabbdom-jsx';
 import { injectable } from 'inversify';
-import { Point, PolylineEdgeView, RectangularNodeView, RenderingContext, SEdge, toDegrees, angleOfPoint } from "sprotty";
-import { StatusNode } from "./model";
+import { Point, PolylineEdgeView, RectangularNodeView, RenderingContext, toDegrees, angleOfPoint } from "sprotty";
+import { StatusNode, WorkflowTransitionEdge } from "./model";
 import { VNode } from "snabbdom/vnode";
 
 @injectable()
@@ -32,7 +32,7 @@ export class StatusNodeView extends RectangularNodeView {
 
 @injectable()
 export class WorkflowTransitionEdgeView extends PolylineEdgeView {
-    protected renderLine(edge: SEdge, segments: Point[], context: RenderingContext): VNode {
+    protected renderLine(edge: WorkflowTransitionEdge, segments: Point[], context: RenderingContext): VNode {
         const firstPoint = segments[0];
         let path = `M ${firstPoint.x},${firstPoint.y}`;
         for (let i = 1; i < segments.length; i++) {
@@ -42,7 +42,7 @@ export class WorkflowTransitionEdgeView extends PolylineEdgeView {
         return <path class-workflow-transition={true} d={path}/>;
     }
 
-    protected renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
+    protected renderAdditionals(edge: WorkflowTransitionEdge, segments: Point[], context: RenderingContext): VNode[] {
         const s1 = segments[1];
         const s2 = segments[0];
         const t1 = segments[segments.length - 2];
@@ -51,7 +51,7 @@ export class WorkflowTransitionEdgeView extends PolylineEdgeView {
         const sourceArrow = this.arrowHead(s1, s2)
         const targetArrow = this.arrowHead(t1, t2)
 
-        if (edge.type === 'edge:unidir') {
+        if (edge.direction === 'unidir') {
             return [ targetArrow ];
         }
         else {

@@ -24,10 +24,11 @@ class WorkflowDiagramsController < ApplicationController
     end
     edges = graph_edges(tracker_id, role_id).map do |e|
       {
-        type: "edge:#{e.attributes['direction']}",
+        type: "edge",
         id: "e#{e.id}",
         sourceId: "n#{e.old_status_id}",
-        targetId: "n#{e.new_status_id}"
+        targetId: "n#{e.new_status_id}",
+        direction: e.attributes['direction']
       }
     end
     {

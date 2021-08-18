@@ -1,4 +1,5 @@
 import {
+    SEdge,
     SModelElementSchema,
     SNode,
     SNodeSchema
@@ -12,6 +13,10 @@ export interface StatusNodeSchema extends SNodeSchema {
 export class StatusNode extends SNode {
     name: string = ''
     layout: string = 'hbox'
+}
+
+export class WorkflowTransitionEdge extends SEdge {
+    direction: 'unidir' | 'bidir' = 'unidir'
 }
 
 function isObject(obj: unknown): obj is Record<string, unknown> {

@@ -2,7 +2,6 @@ import { Container, ContainerModule } from "inversify";
 import {
   configureModelElement,
   loadDefaultModules,
-  SEdge,
   SGraph,
   SGraphView,
   TYPES,
@@ -18,7 +17,7 @@ import {
 import { elkLayoutModule, ElkFactory } from 'sprotty-elk';
 import ELK from 'elkjs/lib/elk.bundled.js'
 import { StatusNodeView, WorkflowTransitionEdgeView } from "./views";
-import { StatusNode } from "./model";
+import { StatusNode, WorkflowTransitionEdge } from "./model";
 import { WorkflowDiagramModelSource } from "./model-source";
 
 const layoutOptions = {
@@ -41,8 +40,7 @@ export function createContainer(containerId: string) {
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, "graph", SGraph, SGraphView);
     configureModelElement(context, "node", StatusNode, StatusNodeView, { enable: [nameFeature, withEditLabelFeature] });
-    configureModelElement(context, "edge:unidir", SEdge, WorkflowTransitionEdgeView);
-    configureModelElement(context, "edge:bidir", SEdge, WorkflowTransitionEdgeView);
+    configureModelElement(context, "edge", WorkflowTransitionEdge, WorkflowTransitionEdgeView);
 
     // To avoid sprotty-missing. maybe bug?
     configureModelElement(context, "routing-point", SRoutingHandle, SRoutingHandleView);
