@@ -13,16 +13,12 @@ import {
   PolylineEdgeRouter,
   nameFeature,
   withEditLabelFeature,
-  editLabelFeature,
-  SLabelView,
-  SLabel,
   configureViewerOptions,
 } from "sprotty";
 import { elkLayoutModule, ElkFactory } from 'sprotty-elk';
 import ELK from 'elkjs/lib/elk.bundled.js'
-
-import { TaskView, TaskEdgeView } from "./views";
-import { TaskNode } from "./model";
+import { StatusNodeView, WorkflowTransitionEdgeView } from "./views";
+import { StatusNode } from "./model";
 import { WorkflowDiagramModelSource } from "./model-source";
 
 const layoutOptions = {
@@ -31,7 +27,7 @@ const layoutOptions = {
   "spacing.nodeNode": "60",
   "spacing.nodeNodeBetweenLayers": "60",
   "spacing.edgeNodeBetweenLayers": "30",
-};
+}
 
 export function createContainer(containerId: string) {
   require("sprotty/css/sprotty.css");
@@ -43,14 +39,13 @@ export function createContainer(containerId: string) {
     rebind(TYPES.IEdgeRouter).to(PolylineEdgeRouter);
 
     const context = { bind, unbind, isBound, rebind };
-    configureModelElement(context, "graph",       SGraph,   SGraphView);
-    configureModelElement(context, "node",        TaskNode, TaskView,         { enable: [nameFeature, withEditLabelFeature] });
-    configureModelElement(context, "label",       SLabel,   SLabelView,       { enable: [editLabelFeature] });
-    configureModelElement(context, "edge:unidir", SEdge,    TaskEdgeView);
-    configureModelElement(context, "edge:bidir",  SEdge,    TaskEdgeView);
+    configureModelElement(context, "graph", SGraph, SGraphView);
+    configureModelElement(context, "node", StatusNode, StatusNodeView, { enable: [nameFeature, withEditLabelFeature] });
+    configureModelElement(context, "edge:unidir", SEdge, WorkflowTransitionEdgeView);
+    configureModelElement(context, "edge:bidir", SEdge, WorkflowTransitionEdgeView);
 
     // To avoid sprotty-missing. maybe bug?
-    configureModelElement(context, "routing-point",          SRoutingHandle, SRoutingHandleView);
+    configureModelElement(context, "routing-point", SRoutingHandle, SRoutingHandleView);
     configureModelElement(context, "volatile-routing-point", SRoutingHandle, SRoutingHandleView);
 
     // Logging

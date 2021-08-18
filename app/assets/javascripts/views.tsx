@@ -2,22 +2,36 @@
 import { svg } from 'snabbdom-jsx';
 import { injectable } from 'inversify';
 import { Point, PolylineEdgeView, RectangularNodeView, RenderingContext, SEdge, toDegrees, angleOfPoint } from "sprotty";
-import { TaskNode } from "./model";
+import { StatusNode } from "./model";
 import { VNode } from "snabbdom/vnode";
 
 @injectable()
-export class TaskView extends RectangularNodeView {
-    render(node: Readonly<TaskNode>, context: RenderingContext): VNode {
+export class StatusNodeView extends RectangularNodeView {
+    render(node: Readonly<StatusNode>, context: RenderingContext): VNode {
+        const width  = Math.max(node.size.width, 0)
+        const height = Math.max(node.size.height, 0)
+        const props = {
+          'class-sprotty-node': true,
+          'class-workflow-status': true,
+          'class-mouseover': node.hoverFeedback,
+          'class-selected': node.selected,
+           x: 0,
+           y: 0,
+           rx: 5,
+           ry: 5,
+           width: width,
+           height: height
+        }
         return <g>
-            <rect class-sprotty-node={true} class-workflow-status={true}
-                class-mouseover={node.hoverFeedback} class-selected={node.selected}
-                x="0" y="0"  rx={5} ry={5} width={Math.max(node.size.width, 0)} height={Math.max(node.size.height, 0)}></rect>
-            <text>{node.name}</text>
+            <rect {...props}></rect>
+            <text class-status-label={true} x={width / 2} y={height / 2}>{node.name}</text>
+            {context.renderChildren(node)}
         </g>;
     }
 }
+
 @injectable()
-export class TaskEdgeView extends PolylineEdgeView {
+export class WorkflowTransitionEdgeView extends PolylineEdgeView {
     protected renderLine(edge: SEdge, segments: Point[], context: RenderingContext): VNode {
         const firstPoint = segments[0];
         let path = `M ${firstPoint.x},${firstPoint.y}`;
@@ -25,7 +39,7 @@ export class TaskEdgeView extends PolylineEdgeView {
             const p = segments[i];
             path += ` L ${p.x},${p.y}`;
         }
-        return <path class-elkedge={true} d={path}/>;
+        return <path class-workflow-transition={true} d={path}/>;
     }
 
     protected renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
@@ -34,16 +48,19 @@ export class TaskEdgeView extends PolylineEdgeView {
         const t1 = segments[segments.length - 2];
         const t2 = segments[segments.length - 1];
 
-        const sourceArrow = <path class-elkedge={true} class-arrow={true} d="M 0,0 L 8,-3 L 8,3 Z"
-            transform={`rotate(${toDegrees(angleOfPoint({ x: s1.x - s2.x, y: s1.y - s2.y }))} ${s2.x} ${s2.y}) translate(${s2.x} ${s2.y})`}/>
-        const targetArrow = <path class-elkedge={true} class-arrow={true} d="M 0,0 L 8,-3 L 8,3 Z"
-            transform={`rotate(${toDegrees(angleOfPoint({ x: t1.x - t2.x, y: t1.y - t2.y }))} ${t2.x} ${t2.y}) translate(${t2.x} ${t2.y})`}/>
-        
+        const sourceArrow = this.arrowHead(s1, s2)
+        const targetArrow = this.arrowHead(t1, t2)
+
         if (edge.type === 'edge:unidir') {
             return [ targetArrow ];
         }
         else {
             return [ sourceArrow, targetArrow ];
         }
+    }
+
+    private arrowHead(p1: Point, p2: Point) {
+        return <path class-arrow={true} class-workflow-transition={true} d="M 0,0 L 8,-3 L 8,3 Z"
+            transform={`rotate(${toDegrees(angleOfPoint({ x: p1.x - p2.x, y: p1.y - p2.y }))} ${p2.x} ${p2.y}) translate(${p2.x} ${p2.y})`}/>
     }
 }

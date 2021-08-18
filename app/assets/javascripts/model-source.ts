@@ -1,69 +1,90 @@
-import { injectable, inject } from 'inversify';
-import {
-    LocalModelSource,
-    SModelRootSchema,
-    SGraphSchema,
-    SModelElementSchema,
-    Dimension,
+import { 
+  ActionHandlerRegistry,
+  SelectAction,
+  SelectAllAction,
+  LocalModelSource,
+  SModelElementSchema,
+  SModelRootSchema,
+  Action
 } from "sprotty";
-import { ElkLayoutEngine } from 'sprotty-elk';
+import { isStatusNode } from "./model";
 
-@injectable()
 export class WorkflowDiagramModelSource extends LocalModelSource {
 
-    constructor(@inject(ElkLayoutEngine) private elkEngine: ElkLayoutEngine) {
-        super();
+  readonly ns = 'http://www.w3.org/2000/svg'
+
+  sizingOptions: { padding: number } = { padding: 0 }
+
+  private element: HTMLElement | null = null;
+
+  initialize(registry: ActionHandlerRegistry): void {
+    super.initialize(registry);
+
+    registry.register(SelectAction.KIND, this);
+    registry.register(SelectAllAction.KIND, this);
+  }
+
+  setModel(newRoot: SModelRootSchema) {
+    const sized = this.setChildrenSizes(newRoot)
+    return super.setModel(sized);
+  }
+
+  handle(action: Action): void {
+    switch (action.kind) {
+        case SelectAction.KIND:
+            this.handleSelect(action as SelectAction);
+            break;
+        case SelectAllAction.KIND:
+            this.handleSelectAll(action as SelectAllAction);
+            break;
+        default:
+            super.handle(action);
     }
+  }
 
-    async setModel(graph: SModelRootSchema) {
-        const sized = setChildrenSizes(this.viewerOptions.baseDiv, graph, { padding: 8 })
-        const result = await this.elkEngine.layout(sized);
-        super.setModel(result);
+  sourceStatusId: string | null = null
+
+  protected handleSelect(action: SelectAction) {
+    if (this.sourceStatusId ===  null) {
+      this.sourceStatusId = action.selectedElementsIDs[0];
+    } else {
+      const targetId = action.selectedElementsIDs[0]
+      const newEdge = {
+        id: `e_${this.sourceStatusId}_${targetId}`,
+        type: 'edge',
+        sourceId: this.sourceStatusId,
+        targetId: targetId
+      }
+      this.addElements([newEdge])
+      this.sourceStatusId = null
     }
-}
+  }
 
-const ns = "http://www.w3.org/2000/svg";
+  protected handleSelectAll(action: SelectAllAction) {
+  }
 
-function setChildrenSizes(
-  containerId: string,
-  graph: SModelRootSchema,
-  options = { padding: 0 }
-): SGraphSchema {
-  const root = document.getElementById(containerId);
+  private setChildrenSizes(graph: SModelRootSchema) {
+    this.element = document.getElementById(this.viewerOptions.baseDiv);
+    const svg = document.createElementNS(this.ns, 'svg');
+    svg.setAttribute('style', 'visibility:hidden');
+  
+    this.element?.append(svg)
+    graph?.children?.forEach(child => this.setDimension(svg, child))
+    svg.remove()
+    return graph
+  }
 
-  const svg = document.createElementNS(ns, "svg");
-  svg.setAttribute("style", "visibility:hidden");
-
-  root?.append(svg);
-  graph.children?.forEach((child) => setDimension(svg, child, options));
-  svg.remove();
-  return graph as SGraphSchema;
-}
-
-function setDimension(
-  svg: Element,
-  node: SModelElementSchema,
-  options: { padding: number }
-) {
-  if (!hasName(node)) return;
-
-  const text = document.createElementNS(ns, "text");
-  text.textContent = node.name;
-  svg.append(text);
-  const tb = text.getBBox();
-  node.size = {
-    height: tb.height + options.padding,
-    width: tb.width + options.padding,
-  };
-}
-
-
-function isObject(obj: unknown): obj is Record<string, unknown> {
-  return typeof obj !== 'object' && obj !== null;
-}
-
-function hasName(obj: unknown): obj is { name: string, size?: Dimension } {
-  if (!isObject(obj)) return false;
-
-  return typeof obj["name"] === "string";
+  private setDimension(svg: Element, node: SModelElementSchema) {
+    if (!isStatusNode(node)) return;
+    const text = document.createElementNS(this.ns, 'text');
+    text.classList.add('status-label');
+    text.textContent = node.name;
+    svg.append(text);
+  
+    const tb = text.getBBox();
+    node.size = {
+      height: tb.height + this.sizingOptions.padding,
+      width: tb.width + this.sizingOptions.padding
+    }
+  }
 }
