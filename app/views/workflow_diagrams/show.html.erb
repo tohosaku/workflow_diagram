@@ -24,7 +24,7 @@ $('.workflow_transition').on('change', function(event) {
       'tracker_id': $('#tracker_id').val()
     }
   }).done(function(data){
-      setGraph(data);
+      setGraph('sprotty', data);
   });
 })
 <% end %>
