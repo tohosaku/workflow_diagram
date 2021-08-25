@@ -1,0 +1,8 @@
+<%= tag.div :class => [:checker, (:hidden if hidden)] do %>
+  <%= title %>
+  <ul>
+    <% obj.each do |e| %>
+      <%= menu_item e %>
+    <% end %>
+  </ul>
+<% end %>

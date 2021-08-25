@@ -1,8 +1,34 @@
+#workflow_diagram {
+    margin-top: 20px;
+    display: flex
+}
+
+#workflow_diagram_menu {
+    width: 300px
+}
+
+#workflow_diagram_menu .checker {
+    margin-top: 2em;
+}
+
+#workflow_diagram_menu ul {
+    list-style-type: none;
+}
+
+#sprotty {
+    flex: 1
+}
+
+#workflow_diagram_menu .hidden {
+    display: none;
+}
+
 .sprotty-node.workflow-status {
     fill: #507AAA;
     stroke: #222;
     font-weight: bold;
 }
+
 .sprotty-node.selected {
     stroke-width: 3;
 }

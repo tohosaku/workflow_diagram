@@ -5,26 +5,19 @@
 
 <h2>Workflow Diagram</h2>
 
-<label><%=l(:label_role)%>:
-<%= select_tag 'role_id', options_from_collection_for_select(Role.sorted.select(&:consider_workflow?), "id", "name"), class: :workflow_transition  %>
-</label>
-<label><%=l(:label_tracker)%>:
-<%= select_tag 'tracker_id', options_from_collection_for_select(Tracker.sorted, "id", "name"), class: :workflow_transition %>
-</label>
+<div id="workflow_diagram">
+  <div id="workflow_diagram_menu">
+    <label>
+      <%= l(:label_filter_plural) %>
+      <%= select_tag 'filter_selector', options_for_select(filter_options, :tracker) %>
+    </label>
+    <%= render partial: 'selector', locals: { id: 'tracker_id', obj: trackers, hidden: true } %>
+    <%= render partial: 'selector', locals: { id: 'role_id', obj: roles, hidden: false } %>
 
-<div id="sprotty"></div>
+    <%= render partial: 'checker', locals: { title: 'ロールの選択', obj: roles, hidden: false } %>
+    <%= render partial: 'checker', locals: { title: 'トラッカーの選択', obj: trackers, hidden: true } %>
+  </div>
+  <div id="sprotty"></div>
+</div>
+
 <script src='/plugin_assets/workflow_diagram/javascripts/bundle.js'></script>
-<%= javascript_tag do %>
-$('.workflow_transition').on('change', function(event) {
-  $.ajax({
-    url: "<%= escape_javascript workflow_diagram_path(:format => 'json') %>",
-    type: 'get',
-    data: {
-      'role_id': $('#role_id').val(),
-      'tracker_id': $('#tracker_id').val()
-    }
-  }).done(function(data){
-      setGraph('sprotty', data);
-  });
-})
-<% end %>
