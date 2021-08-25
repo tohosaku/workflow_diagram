@@ -6,13 +6,14 @@
 <h2>Workflow Diagram</h2>
 
 <div id="workflow_diagram">
-  <div id="workflow_diagram_menu">
+  <div id="workflow_diagram_menu" data-controller="visibility" data-visibility-hidden-class="hidden">
     <label>
       <%= l(:label_filter_plural) %>
-      <%= select_tag 'filter_selector', options_for_select(filter_options, :tracker) %>
+      <%= select_tag 'filter_selector', options_for_select(filter_options, :tracker), :data => { :action => 'change->visibility#toggle'} %>
     </label>
-    <%= render partial: 'selector', locals: { id: 'tracker_id', obj: trackers, hidden: true } %>
-    <%= render partial: 'selector', locals: { id: 'role_id', obj: roles, hidden: false } %>
+    &nbsp;
+    <%= render partial: 'selector', locals: { id: 'tracker_id', obj: trackers, hidden: false } %>
+    <%= render partial: 'selector', locals: { id: 'role_id', obj: roles, hidden: true } %>
 
     <%= render partial: 'checker', locals: { title: 'ロールの選択', obj: roles, hidden: false } %>
     <%= render partial: 'checker', locals: { title: 'トラッカーの選択', obj: trackers, hidden: true } %>

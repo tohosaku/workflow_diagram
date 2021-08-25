@@ -1,15 +1,6 @@
-import "reflect-metadata";
-import {
-  SModelRootSchema,
-  TYPES
-} from "sprotty";
-import { createContainer } from "./di.config";
-import { WorkflowDiagramModelSource } from "./model-source";
+import { Application } from "stimulus"
+import { definitionsFromContext } from "stimulus/webpack-helpers"
 
-export function setGraph(containerId: string, workflow: SModelRootSchema) {
-  const container = createContainer(containerId);
-  const modelSource = container.get<WorkflowDiagramModelSource>(TYPES.ModelSource);
-
-  modelSource.sizingOptions = { padding: 8 }
-  modelSource.setModel(workflow);
-}
+const application = Application.start()
+const context = require.context("./controllers", true, /\.js$/)
+application.load(definitionsFromContext(context))

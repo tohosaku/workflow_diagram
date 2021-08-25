@@ -1,4 +1,4 @@
-<%= tag.div :class => [:checker, (:hidden if hidden)] do %>
+<%= tag.div :class => [:checker, (:hidden if hidden)], :data => { "visibility-target" => "element"} do %>
   <%= title %>
   <ul>
     <% obj.each do |e| %>
