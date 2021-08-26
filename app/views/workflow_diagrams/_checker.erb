@@ -1,0 +1,31 @@
+<%= tag.div :class => [:checker, (:hidden if hidden)],
+            :data => {
+              "visibility-target" => :element,
+              'diagram-target' => :checker,
+              :controller => "checkbox color"
+            } do %>
+  <%= title %>
+  <ul>
+    <% obj.each.with_index do |e, idx| %>
+      <%= tag.li do %>
+        <%= tag.label :class => 'form-checkbox' do %>
+          <%= tag.input(:type => :checkbox,
+                        :value => e.id,
+                        :data => {
+                          'checkbox-target' => :checkbox,
+                          'color-target' => :checkbox,
+                          :action => 'change->color#colorize',
+                          :color => marker_color(idx)
+                        }) %>
+          <%= tag.i :class => 'form-icon',
+                    :data => {
+                      'color-target' => :marker
+                    }
+          %>
+          <%= e.name %>
+        <% end %>
+        &nbsp;<%= tag.button '選択' %>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>

@@ -1,0 +1,9 @@
+<%= tag.label :class => (:hidden if hidden), :data => { :controller => :filter,
+                                                        'visibility-target' => :element,
+                                                        'diagram-target' => 'filter',
+                                                        :keyname => keyname } do %>
+  <%= tag.select options_from_collection_for_select(obj, "id", "name"),
+                 class: :workflow_transition,
+                 data: { 'filter-target' => 'element' }
+  %>
+<% end %>
