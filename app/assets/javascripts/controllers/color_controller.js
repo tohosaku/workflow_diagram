@@ -13,6 +13,7 @@ export default class extends Controller {
         if (this.bordercolorValue == '') {
             this.bordercolorValue = '#bcc3ce'
         }
+        this.confirm()
     }
 
     colorize(e) {
@@ -22,7 +23,19 @@ export default class extends Controller {
 
         const color = e.target.dataset.color;
 
-        if (e.target.checked) {
+        this.setColor(e.target.checked, marker, color)
+    }
+
+    confirm() {
+        this.checkboxTargets.forEach((n, i) => {
+            const marker = this.markerTargets[i];
+            const color = n.dataset.color;
+            this.setColor(n.checked, marker, color)
+        })
+    }
+
+    setColor(checked, marker, color) {
+        if (checked) {
             marker.style.backgroundColor = color
             marker.style.borderColor = color
         } else {
