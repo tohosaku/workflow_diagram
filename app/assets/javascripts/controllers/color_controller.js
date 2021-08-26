@@ -30,4 +30,12 @@ export default class extends Controller {
             marker.style.borderColor = this.bordercolorValue
         }
     }
+
+    get colormap() {
+        const func = (cmap, n) => {
+            cmap[n.value] = n.dataset.color
+            return cmap
+        }
+        return this.checkboxTargets.reduce(func, {})
+    }
 }

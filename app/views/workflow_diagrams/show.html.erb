@@ -6,17 +6,18 @@
 <h2>Workflow Diagram</h2>
 
 <div id="workflow_diagram">
-  <div id="workflow_diagram_menu" data-controller="visibility" data-visibility-hidden-class="hidden">
+  <div id="workflow_diagram_menu" data-controller="visibility diagram" data-visibility-hidden-class="hidden" data-diagram-url-value="<%= escape_javascript(workflow_diagram_path(:format => 'json')) %>" data-diagram-container-value="sprotty">
     <label>
       <%= l(:label_filter_plural) %>
       <%= select_tag 'filter_selector', options_for_select(filter_options, :tracker), :data => { :action => 'change->visibility#toggle'} %>
     </label>
     &nbsp;
-    <%= render partial: 'selector', locals: { id: 'tracker_id', obj: trackers, hidden: false } %>
-    <%= render partial: 'selector', locals: { id: 'role_id', obj: roles, hidden: true } %>
+    <%= render partial: 'selector', locals: { keyname: 'tracker', obj: trackers, hidden: false } %>
+    <%= render partial: 'selector', locals: { keyname: 'role', obj: roles, hidden: true } %>
 
     <%= render partial: 'checker', locals: { title: 'ロールの選択', obj: roles, hidden: false } %>
     <%= render partial: 'checker', locals: { title: 'トラッカーの選択', obj: trackers, hidden: true } %>
+    <%= tag.button 'apply', data: { action: 'diagram#apply' } %>
   </div>
   <div id="sprotty"></div>
 </div>

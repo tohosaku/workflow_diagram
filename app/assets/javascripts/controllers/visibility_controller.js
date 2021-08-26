@@ -11,6 +11,10 @@ export default class extends Controller {
       const event = new Event('change', { bubbles: true })
       el.dispatchEvent(event);
     })
+
+    this.elementTargets.forEach(elm => {
+      elm[this.identifier] = { visible: () => !elm.classList.contains(this.hiddenClass) }
+    })
   }
 
   toggle(evt) {

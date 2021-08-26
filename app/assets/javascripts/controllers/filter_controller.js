@@ -2,13 +2,13 @@ import { Controller } from "stimulus";
 
 export default class extends Controller {
 
-  static targets = [ "checkbox" ]
+  static targets = [ "element" ]
 
   connect() {
     this.element[this.identifier] = this;
   }
 
-  get checked() {
-    return this.checkboxTargets.filter(e => e.checked).map(e => e.value);
+  get value() {
+      return this.elementTarget.value
   }
 }

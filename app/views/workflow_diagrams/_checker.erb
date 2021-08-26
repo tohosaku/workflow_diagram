@@ -1,6 +1,7 @@
 <%= tag.div :class => [:checker, (:hidden if hidden)],
             :data => {
-              "visibility-target" => "element",
+              "visibility-target" => :element,
+              'diagram-target' => :checker,
               :controller => "checkbox color"
             } do %>
   <%= title %>
