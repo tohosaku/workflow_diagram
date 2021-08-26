@@ -65,3 +65,84 @@ svg {
     border-width: 1px;
     border-color: #bbb;
 }
+
+
+/* copied from https://picturepan2.github.io/spectre/ */
+
+*, ::after, ::before {
+    box-sizing: inherit;
+}
+
+[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.form-checkbox {
+  line-height: 1.2rem;
+  margin: .2rem 0;
+  min-height: 1.4rem;
+  padding: .1rem .4rem .1rem 1.2rem;
+  position: relative;
+}
+
+.form-checkbox input {
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
+.form-checkbox input:focus + .form-icon {
+  border-color: #aaa; 
+}
+
+.form-checkbox input:checked + .form-icon {
+  background: #666;
+  border-color: #666;
+}
+
+.form-checkbox .form-icon {
+  border: .05rem solid #bcc3ce;
+  cursor: pointer;
+  display: inline-block;
+  position: absolute;
+}
+
+.form-checkbox .form-icon {
+  background: #fff;
+  height: .8rem;
+  left: 0;
+  top: .3rem;
+  width: .8rem;
+}
+
+.form-checkbox input:active + .form-icon {
+  background: #eef0f3;
+}
+
+.form-checkbox .form-icon {
+  border-radius: .1rem;
+}
+
+.form-checkbox input:checked + .form-icon::before {
+  background-clip: padding-box;
+  border: 0.18rem solid #fff;
+  border-left-width: 0;
+  border-top-width: 0;
+  content: "";
+  height: 7px;
+  left: 40%;
+  margin-left: -2px;
+  margin-top: -4px;
+  position: absolute;
+  top: 30%;
+  transform: rotate(45deg);
+  width: 3.5px;
+}
+
+.menu .menu-item .form-checkbox {
+  margin: .1rem 0;
+}
