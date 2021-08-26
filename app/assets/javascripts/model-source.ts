@@ -7,13 +7,14 @@ import {
   SModelRootSchema,
   Action
 } from "sprotty";
-import { isStatusNode } from "./model";
+import { isStatusNode, isWorkflowTransitionEdge } from "./model";
 
 export class WorkflowDiagramModelSource extends LocalModelSource {
 
   readonly ns = 'http://www.w3.org/2000/svg'
 
   sizingOptions: { padding: number } = { padding: 0 }
+  colormap: Record<string, string> = {}
 
   private element: HTMLElement | null = null;
 
@@ -26,7 +27,8 @@ export class WorkflowDiagramModelSource extends LocalModelSource {
 
   setModel(newRoot: SModelRootSchema) {
     const sized = this.setChildrenSizes(newRoot)
-    return super.setModel(sized);
+    const colored = this.setEdgeColors(sized)
+    return super.setModel(colored);
   }
 
   handle(action: Action): void {
@@ -62,6 +64,16 @@ export class WorkflowDiagramModelSource extends LocalModelSource {
 
   protected handleSelectAll(action: SelectAllAction) {
   }
+
+  private setEdgeColors(graph: SModelRootSchema) {
+    graph?.children?.forEach(child => {
+      if (isWorkflowTransitionEdge(child) && child.color_id !== undefined) {
+        child.color = this.colormap[child.color_id]
+      }
+    })
+    return graph
+  }
+
 
   private setChildrenSizes(graph: SModelRootSchema) {
     this.element = document.getElementById(this.viewerOptions.baseDiv);

@@ -39,7 +39,7 @@ export class WorkflowTransitionEdgeView extends PolylineEdgeView {
             const p = segments[i];
             path += ` L ${p.x},${p.y}`;
         }
-        return <path class-workflow-transition={true} d={path}/>;
+        return <path class-workflow-transition={true} d={path} stroke={edge.color}/>;
     }
 
     protected renderAdditionals(edge: WorkflowTransitionEdge, segments: Point[], context: RenderingContext): VNode[] {
@@ -48,8 +48,8 @@ export class WorkflowTransitionEdgeView extends PolylineEdgeView {
         const t1 = segments[segments.length - 2];
         const t2 = segments[segments.length - 1];
 
-        const sourceArrow = this.arrowHead(s1, s2)
-        const targetArrow = this.arrowHead(t1, t2)
+        const sourceArrow = this.arrowHead(s1, s2, edge.color)
+        const targetArrow = this.arrowHead(t1, t2, edge.color)
 
         if (edge.direction === 'unidir') {
             return [ targetArrow ];
@@ -59,8 +59,8 @@ export class WorkflowTransitionEdgeView extends PolylineEdgeView {
         }
     }
 
-    private arrowHead(p1: Point, p2: Point) {
-        return <path class-arrow={true} class-workflow-transition={true} d="M 0,0 L 8,-3 L 8,3 Z"
+    private arrowHead(p1: Point, p2: Point, color?: string) {
+        return <path fill={color} d="M 0,0 L 8,-3 L 8,3 Z"
             transform={`rotate(${toDegrees(angleOfPoint({ x: p1.x - p2.x, y: p1.y - p2.y }))} ${p2.x} ${p2.y}) translate(${p2.x} ${p2.y})`}/>
     }
 }

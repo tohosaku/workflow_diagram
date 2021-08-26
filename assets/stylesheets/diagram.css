@@ -49,12 +49,7 @@ text.status-label {
 
 .workflow-transition {
     fill: none;
-    stroke: #488;
     stroke-width: 2;
-}
-
-.arrow {
-    fill: #488;
 }
 
 svg {
